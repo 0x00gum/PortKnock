@@ -4,8 +4,6 @@ import sys
 import time
 import subprocess
 
-# TODO: Filter packets better.
-
 
 class PortKnocking(object):
 
@@ -45,6 +43,8 @@ class PortKnocking(object):
         self.timeout = args.timeout
 
     def get_encrypted_string(self):
+        
+        # Server is listening for encrypted password and returns the value.
         print("[+] Server is listening for incoming knowcks.")
         data = sniff(count=1, filter=f"icmp and host {self.clientIp}")
         firstIndex = str(data[0])
@@ -54,6 +54,7 @@ class PortKnocking(object):
         return string_to_decrypt
 
     def decrypt_icmp_packet(self):
+        # Decrpyting the icmp packets sent by the client by using Fernet.
         string_to_decrypt = self.get_encrypted_string()
         cipher = Fernet(self.cipher)
         encoded = string_to_decrypt.encode()
@@ -61,6 +62,8 @@ class PortKnocking(object):
         return decrypted_text
 
     def decrypt_password(self):
+
+        # Obviously decrypting the password! 
         decrypted_text = self.decrypt_icmp_packet()
         bytes_pass = bytes(self.password, encoding='utf-8')
         if decrypted_text == bytes_pass:
@@ -88,5 +91,5 @@ class PortKnocking(object):
                     subprocess.call(['service', 'ssh', 'stop'])
                     sys.exit()
 
-
+# Starting the program with arguments!
 PortKnocking(sys.argv[1:]).sniff_packets()
