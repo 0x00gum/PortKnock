@@ -2,8 +2,6 @@
 #   Description:
 #       For usage instructions run the script with no parameters
 #
-
-#   TODO: add UDP option. More than one port.
 #   Demo Version.
 
 from cryptography.fernet import Fernet
@@ -40,7 +38,6 @@ class PortKnocking(object):
 
 
     def generate_packet(self, flag):
-        
         # Generating a packet to send to the server side.
         global host, port_no
         host, port_no = self.host_port.split(':', 2)
@@ -48,7 +45,6 @@ class PortKnocking(object):
         return scapy_packet
 
     def create_packets(self):
-        
         # Creating the packets(ACK | SYN | RST).
         if self.typeOfFlag == 'ACK' or self.typeOfFlag == 'A':
             all_packets = self.generate_packet(flag='A')
@@ -59,16 +55,14 @@ class PortKnocking(object):
         return all_packets
 
     def encrypt_password(self):
-        
-        # Encrypting the pass with Fernet.
+        """Encrypting the pass with Fernet."""
         cipher = Fernet(self.cipher)
         bytes_password = bytes(self.password, encoding='utf-8')
         token = cipher.encrypt(bytes_password)
         return token
 
     def send_packets(self):
-        
-        # Sending the packets to the dst(server side).
+        """Sending the packets to the dst(server side)."""
         token = self.encrypt_password()
         packets_to_send = self.create_packets()
         send(IP(dst=host, src=self.localIp) / ICMP() / "    " / token)
