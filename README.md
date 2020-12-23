@@ -1,9 +1,15 @@
 # PortKnock
 
-A demonstration of how a port knocking looks with flags & password authentication.
+A demonstration of how a port knocking looks like with flags & password authentication.
 
-Port knocking is a common way to open ports externally in a "secure way", the ports are only available for a certain amount of time.
+SSH will be available for a limited amount of time.
 
-Attackers can copy the flags sent to the server-side so I used an encrypted password to avoid that.
+In order to avoid MITM, I encrypted the passwords.  
+
+More info on Port Knowcking (Hebrew):
+
+https://www.digitalwhisper.co.il/files/Zines/0x02/DW2-5-Port-Knocking.pdf
+
+
 
 
