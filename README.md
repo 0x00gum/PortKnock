@@ -1,4 +1,4 @@
-# PortKnock
+# PortKnock - My Own Implementation
 
 A demonstration of how a port knocking looks like with flags & password authentication.
 
