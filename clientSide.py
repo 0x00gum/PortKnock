@@ -10,25 +10,27 @@ import sys
 
 
 class PortKnocking(object):
-
     def __init__(self, args: list):
         self._parse_args(args)
 
     def _parse_args(self, args: list):
-        parser = argparse.ArgumentParser(add_help=True, description="Client side of the portknocking process. "
+        parser = argparse.ArgumentParser(add_help=True, description="Client side of the port knocking process. "
                                                                     "A sequence of SIN/ACK/RST flags are decided by "
                                                                     "the server side.")
         parser.add_argument('host', metavar='[host:port]',
                             help='Hostname or IP address with port of the host to knock on.')
-        parser.add_argument('-l', '--localIp', help='ip of the client', required=True)
+        parser.add_argument('-l', '--localIp',
+                            help='ip of the client', required=True)
         parser.add_argument('-n', '--numberOfknocks', help='number of flags to send(default is 4): -n 4', default=4,
                             required=False)
-        parser.add_argument('-f', '--flag', help='type of a flag to send: -f ACK or -f SYN or -f RST.', required=True)
-        parser.add_argument('-c', '--cipher', help='cipher Key to encrypt a password (avoid MITM).', required=False)
+        parser.add_argument(
+            '-f', '--flag', help='type of a flag to send: -f ACK or -f SYN or -f RST.', required=True)
+        parser.add_argument(
+            '-c', '--cipher', help='cipher Key to encrypt a password (avoid MITM).', required=False)
         parser.add_argument('-p', '--password',
                             help='Password to authenticate with the remote server(will be encrypted).', required=True)
-
         args = parser.parse_args(args)
+
         self.host_port = args.host
         self.localIp = args.localIp
         self.numberOfknocks = args.numberOfknocks
@@ -36,22 +38,24 @@ class PortKnocking(object):
         self.cipher = args.cipher
         self.password = args.password
 
-
     def generate_packet(self, flag):
-        # Generating a packet to send to the server side.
+        """Generating a packet to send to the server side."""
         global host, port_no
         host, port_no = self.host_port.split(':', 2)
-        scapy_packet = IP(dst=host, src=self.localIp) / TCP(dport=int(port_no), flags=flag)
+        scapy_packet = IP(dst=host, src=self.localIp) / \
+            TCP(dport=int(port_no), flags=flag)
+
         return scapy_packet
 
     def create_packets(self):
-        # Creating the packets(ACK | SYN | RST).
+        """Creating the packets(ACK | SYN | RST)."""
         if self.typeOfFlag == 'ACK' or self.typeOfFlag == 'A':
             all_packets = self.generate_packet(flag='A')
         elif self.typeOfFlag == 'SYN' or self.typeOfFlag == 'S':
             all_packets = self.generate_packet(flag='S')
         elif self.typeOfFlag == 'RST' or self.typeOfFlag == 'R':
             all_packets = self.generate_packet(flag='R')
+
         return all_packets
 
     def encrypt_password(self):
@@ -59,6 +63,7 @@ class PortKnocking(object):
         cipher = Fernet(self.cipher)
         bytes_password = bytes(self.password, encoding='utf-8')
         token = cipher.encrypt(bytes_password)
+
         return token
 
     def send_packets(self):
@@ -71,10 +76,10 @@ class PortKnocking(object):
 
 
 if __name__ == '__main__':
-    
-    # explains how to run the script. 
+
+    # explains how to run the script.
     if len(sys.argv) == 1:
-        
+
         print("\nThere are a few modes for using this script")
         print("\n1. Use port knocking with SYN flags:")
         print("\n\tpython3 clientSide.py server.ip.address:port -l my.local.ip.address -f SYN -n 4 -cipher "
@@ -94,5 +99,5 @@ if __name__ == '__main__':
         print(
             "\nThis will send the remote server 4 RST packets for authentication (flags decided by the server "
             "side).")
-        
+    # running the script with arguments.
     PortKnocking(sys.argv[1:]).send_packets()
