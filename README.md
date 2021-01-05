@@ -1,10 +1,10 @@
 # PortKnock - My Own Implementation
 
-A demonstration of how a port knocking looks like with flags & password authentication.
+A cool demonstration of how a port knocking looks like with flags & password authentication.
 
 SSH will be available for a limited amount of time.
 
-In order to avoid MITM, I encrypted the passwords.  
+In order to avoid MITM, I encrypted the passwords (obviously).  
 
 More info on Port Knowcking (Hebrew):
 
